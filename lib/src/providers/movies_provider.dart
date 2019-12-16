@@ -12,6 +12,8 @@ class MoviesProvider{
   
   int _popularsPage = 0;
 
+  bool _loading = false;
+
   List<Movie> _populars = new List();
 
   //Comienza stream
@@ -43,6 +45,11 @@ class MoviesProvider{
 
   Future<List<Movie>> getPopulars() async{
     
+    //validamos que el getPopulars no se este ejecutando
+    if(_loading) return [];
+    _loading = true;
+
+    //cada ves que se ejecuta el metodo se incrementa la página
     _popularsPage++;
 
     final url = Uri.https(_url, '3/movie/popular',{
@@ -57,6 +64,9 @@ class MoviesProvider{
 
     //aquí guardamos los datos para el stream mediante sink
     popularsSink( _populars );
+
+    //indicamos que ya no se esta ejecutando el metodo
+    _loading = false;
 
     return resp;
 
